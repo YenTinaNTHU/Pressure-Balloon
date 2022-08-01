@@ -11,23 +11,24 @@ class DialogBlock extends StatelessWidget {
     'Too...too hard!!!',
     'Nice',
     'Close your eyes and relax.'
+        'EUREKA MOMENT!'
   ];
 
   @override
   Widget build(BuildContext context) {
-    int state = 0;
+    int id = 0;
     if (pressure / 1.0 <= 0.0) {
-      state = 0;
+      id = 0;
     } else if (pressure / 1.0 < 0.4) {
-      state = 1;
+      id = 1;
     } else if (pressure / 1.0 >= 0.4 && pressure / 1.0 <= 0.8) {
-      state = 3;
+      id = 3;
     } else if (pressure / 1.0 > 0.8) {
-      state = 2;
+      id = 2;
     }
     return Stack(alignment: Alignment.center, children: <Widget>[
       Image.asset('assets/images/block.png'),
-      Text(dialog[state])
+      Text(dialog[id])
     ]);
   }
 }
