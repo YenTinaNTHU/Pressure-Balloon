@@ -16,8 +16,21 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  double _pressure = 0.0;
+  void _handlePressureChanged(double newPressure) {
+    setState(() {
+      _pressure = newPressure;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +65,7 @@ class MyApp extends StatelessWidget {
                       flex: 10,
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                        child:  PressurePercentage(pressure:0.5,),
+                        child:  PressurePercentage(pressure: _pressure,),
                       ),),
                     Spacer(flex: 1),
                     Expanded(
@@ -66,11 +79,11 @@ class MyApp extends StatelessWidget {
                   ],
                 ),),
               Spacer(flex: 2),
-              Expanded(flex: 5,child: ForceBar(pressure: 1.0,),),
+              Expanded(flex: 5,child: ForceBar(pressure: _pressure,),),
               Spacer(flex: 3),
               Expanded(flex: 13, child: DialogBlock(),),
               Spacer(flex: 3),
-              Expanded(flex: 40, child: Balloon(),),
+              Expanded(flex: 40, child: Balloon(pressure: _pressure, onChanged: _handlePressureChanged,),),
             ],
           ),
         ),
