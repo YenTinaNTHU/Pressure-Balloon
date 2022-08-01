@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class DialogBlock extends StatelessWidget {
-  DialogBlock({Key? key, this.pressure = 0.1}) : super(key: key);
+  DialogBlock({Key? key, this.pressure = 0.1, this.state = 0})
+      : super(key: key);
 
   final double pressure;
+  final double state;
 
   final List<String> dialog = [
     'Press me',
     'Press me harder',
     'Too...too hard!!!',
     'Nice',
-    'Close your eyes and relax.'
-        'EUREKA MOMENT!'
+    'Close your eyes and relax.',
+    'EUREKA MOMENT!'
   ];
 
   @override
@@ -21,10 +23,14 @@ class DialogBlock extends StatelessWidget {
       id = 0;
     } else if (pressure / 1.0 < 0.4) {
       id = 1;
-    } else if (pressure / 1.0 >= 0.4 && pressure / 1.0 <= 0.8) {
+    } else if (pressure / 1.0 >= 0.4 && pressure / 1.0 <= 0.8 && state == 0) {
       id = 3;
+    } else if (pressure / 1.0 >= 0.4 && pressure / 1.0 <= 0.8 && state == 1) {
+      id = 4;
     } else if (pressure / 1.0 > 0.8) {
       id = 2;
+    } else if (state == 2) {
+      id = 5;
     }
     return Stack(alignment: Alignment.center, children: <Widget>[
       Image.asset('assets/images/block.png'),
