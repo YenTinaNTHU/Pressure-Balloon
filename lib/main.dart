@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double p = 0.7;
     return MaterialApp(
       title: 'Eureka Moment',
       theme: ThemeData(
@@ -35,42 +36,67 @@ class MyApp extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 25,
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
                       flex: 2,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 50, 0, 0),
-                        child:  Container(
-                          child: Icon(Icons.edit_note_rounded, size: 30, color: Colors.grey,),
+                        padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+                        child: Container(
+                          child: const Icon(
+                            Icons.edit_note_rounded,
+                            size: 30,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),),
-                    Spacer(flex: 1),
+                      ),
+                    ),
+                    const Spacer(flex: 1),
                     Expanded(
                       flex: 10,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                        child:  PressurePercentage(pressure:0.5,),
-                      ),),
-                    Spacer(flex: 1),
+                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        child: PressurePercentage(
+                          pressure: p,
+                        ),
+                      ),
+                    ),
+                    const Spacer(flex: 1),
                     Expanded(
                       flex: 2,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 50, 20, 0),
-                        child:  Container(
-                          child: Icon( Icons.settings_rounded, size: 30, color: Colors.grey,),
+                        padding: const EdgeInsets.fromLTRB(0, 50, 20, 0),
+                        child: Container(
+                          child: const Icon(
+                            Icons.settings_rounded,
+                            size: 30,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),),
+                      ),
+                    ),
                   ],
-                ),),
-              Spacer(flex: 2),
-              Expanded(flex: 5,child: ForceBar(pressure: 1.0,),),
-              Spacer(flex: 3),
-              Expanded(flex: 13, child: DialogBlock(),),
-              Spacer(flex: 3),
-              Expanded(flex: 40, child: Balloon(),),
+                ),
+              ),
+              const Spacer(flex: 2),
+              Expanded(
+                flex: 5,
+                child: ForceBar(
+                  pressure: p,
+                ),
+              ),
+              const Spacer(flex: 3),
+              Expanded(
+                flex: 13,
+                child: DialogBlock(pressure: p),
+              ),
+              const Spacer(flex: 3),
+              const Expanded(
+                flex: 40,
+                child: Balloon(),
+              ),
             ],
           ),
         ),
