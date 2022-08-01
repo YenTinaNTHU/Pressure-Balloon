@@ -1,78 +1,106 @@
-// Copyright 2018 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:my_app/balloon.dart';
-import 'package:my_app/dialogBlock.dart';
-import 'package:my_app/forceBar.dart';
-import 'package:my_app/holdingCircle.dart';
-import 'package:my_app/pressureFrame.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Eureka Moment',
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
       theme: ThemeData(
-        textTheme: GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme),
+        primarySwatch: Colors.red,
       ),
-      home: Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 25,
-              child:  Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(20, 50, 0, 0),
-                      child:  Container(
-                        child: Icon(Icons.edit_note_rounded, size: 30, color: Colors.grey,),
-                      ),
-                    ),),
-                  Spacer(flex: 1),
-                  Expanded(
-                    flex: 10,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                      child:  PressurePercentage(),
-                    ),),
-                  Spacer(flex: 1),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 50, 20, 0),
-                      child:  Container(
-                        child: Icon( Icons.settings_rounded, size: 30, color: Colors.grey,),
-                      ),
-                    ),),
-                ],
-              ),),
-            Spacer(flex: 2),
-            Expanded(flex: 5,child: ForceBar(),),
-            Spacer(flex: 3),
-            Expanded(flex: 13, child: DialogBlock(),),
-            Spacer(flex: 3),
-            Expanded(flex: 40, child: Balloon(),),
-          ],
-        ),
-      ),
+      home: const MyHomePage(),
     );
   }
 }
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  String title = "Eureka Moment";
+  LongPressGestureRecognizer _longPressRecognizer = LongPressGestureRecognizer();
+  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+  double pressure = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _longPressRecognizer = LongPressGestureRecognizer()..onLongPress = _handlePress;
+    _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.1, peakPressure: 1.0);
+    _forcePressRecognizer.onStart = _handleForcePressOnStart;
+    _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
+    _forcePressRecognizer.onEnd = _handleForcePressOnEnd;
+  }
+
+  @override
+  void dispose(){
+    _longPressRecognizer.dispose();
+    _forcePressRecognizer.dispose();
+  }
+  void _handlePress(){
+    HapticFeedback.vibrate();
+  }
+  void _handleForcePressOnStart(ForcePressDetails fpd){
+    HapticFeedback.vibrate();
+  }
+  void _handleForcePressOnUpdate(ForcePressDetails fpd){
+    setState(() {
+      pressure = fpd.pressure;
+    });
+  }
+  void _handleForcePressOnEnd(ForcePressDetails fpd){
+    HapticFeedback.vibrate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: <Widget>[
+          Text("pressure: " + pressure.toStringAsFixed(2)),
+          Center(
+            child: Container(
+              width: (250 * pressure) + 50,
+              height: (250 * pressure) + 100,
+              decoration: const BoxDecoration(
+                color: Colors.redAccent,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text.rich(
+                  TextSpan(
+                    text: "press",
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    recognizer: _forcePressRecognizer,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+

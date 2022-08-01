@@ -17,7 +17,7 @@ class PressurePercentage extends StatelessWidget {
               fontSize: 32.0,
               fontWeight: FontWeight.normal,
               height: 1.2,
-              
+
           ),),
           Spacer(flex:2),
           Text("${(pressure / 1.0 * 100).toStringAsFixed(0)}%",

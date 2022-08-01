@@ -16,8 +16,20 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  double _pressure = 0.0;
+  void _handlePressureChanged(double newPressure) {
+    setState(() {
+      _pressure = newPressure;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +69,13 @@ class MyApp extends StatelessWidget {
                     Expanded(
                       flex: 10,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
                         child: PressurePercentage(
-                          pressure: p,
+                          pressure: _pressure,
                         ),
                       ),
                     ),
-                    const Spacer(flex: 1),
+                    Spacer(flex: 1),
                     Expanded(
                       flex: 2,
                       child: Padding(
@@ -80,22 +92,25 @@ class MyApp extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(flex: 2),
+              Spacer(flex: 2),
               Expanded(
                 flex: 5,
                 child: ForceBar(
-                  pressure: p,
+                  pressure: _pressure,
                 ),
               ),
-              const Spacer(flex: 3),
+              Spacer(flex: 3),
               Expanded(
                 flex: 13,
-                child: DialogBlock(pressure: p),
+                child: DialogBlock(),
               ),
-              const Spacer(flex: 3),
-              const Expanded(
+              Spacer(flex: 3),
+              Expanded(
                 flex: 40,
-                child: Balloon(),
+                child: Balloon(
+                  pressure: _pressure,
+                  onChanged: _handlePressureChanged,
+                ),
               ),
             ],
           ),
