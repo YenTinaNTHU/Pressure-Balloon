@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
               Expanded(
                 flex: 40,
                 child: Balloon(
-                  pressure: p,
+                  pressure: _pressure,
                   onChanged: _handlePressureChanged,
                 ),
               ),
