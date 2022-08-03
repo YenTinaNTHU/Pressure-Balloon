@@ -96,19 +96,19 @@ class _MyAppState extends State<MyApp> {
               Expanded(
                 flex: 5,
                 child: ForceBar(
-                  pressure: _pressure,
+                  pressure: p,
                 ),
               ),
               Spacer(flex: 3),
               Expanded(
                 flex: 13,
-                child: DialogBlock(),
+                child: DialogBlock(pressure: p, state: 1),
               ),
               Spacer(flex: 3),
               Expanded(
                 flex: 40,
                 child: Balloon(
-                  pressure: _pressure,
+                  pressure: p,
                   onChanged: _handlePressureChanged,
                 ),
               ),
