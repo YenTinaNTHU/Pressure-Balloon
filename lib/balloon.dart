@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/parameters.dart';
 
@@ -27,14 +28,28 @@ class Balloon extends StatefulWidget {
   State<Balloon> createState() => _BalloonState();
 }
 
-class _BalloonState extends State<Balloon> {
+class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
 
   double _pressure = 0.0;
   ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
   String _imageUrl = 'assets/images/Balloon_S.png';
 
-  Timer? _timer; //timer may be null
+  // Timer? _timer; //timer may be null
+
   Pressure _pressureStatus = Pressure.small;
+
+  Duration _elapsed = Duration.zero;
+  late final ticker = createTicker((elapsed) {
+    setState(() {
+      _elapsed = elapsed;
+      if (widget.milliseconds > 0) {
+        widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
+      }else{
+        stopTimer(reset: false);
+        if(widget.status == Status.beforeSleep || widget.status == Status.awake) widget.updateStatus(widget.status);
+      }
+    } );
+  });
 
   @override
   void initState() {
@@ -42,7 +57,11 @@ class _BalloonState extends State<Balloon> {
     _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.1, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
   }
-
+  @override
+  void dispose() {
+    ticker.dispose();
+    super.dispose();
+  }
   void _handleForcePressOnUpdate(ForcePressDetails fpd){
     setState(() {
       _pressure = fpd.pressure;
@@ -80,27 +99,23 @@ class _BalloonState extends State<Balloon> {
 
   void resetTimer() {
     widget.setRemainMilliseconds(maxMilliSeconds);
+    setState(() {
+      _elapsed = Duration.zero;
+    });
   }
 
   void startTimer({bool reset = true}){
     if (reset) {
       resetTimer();
     }
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
-      if (widget.milliseconds > 0) {
-        widget.setRemainMilliseconds(widget.milliseconds-1);
-      }else{
-        stopTimer(reset: false);
-        if(widget.status == Status.beforeSleep || widget.status == Status.awake) widget.updateStatus(widget.status);
-      }
-    });
+    ticker.start();
   }
 
   void stopTimer({bool reset = true}){
     if (reset) {
       resetTimer();
     }
-    setState(() => _timer?.cancel());
+    ticker.stop(canceled: true);
   }
 
   @override

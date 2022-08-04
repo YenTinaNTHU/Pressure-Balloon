@@ -10,4 +10,4 @@ enum Pressure {
   big,
 }
 
-const maxMilliSeconds = 500;
+const maxMilliSeconds = 3000;
