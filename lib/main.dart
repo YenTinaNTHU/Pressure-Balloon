@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
               Spacer(flex: 3),
               Expanded(
                 flex: 13,
-                child: DialogBlock(pressure: _pressure, state: 1),
+                child: DialogBlock(pressure: _pressure, state: _status),
               ),
               Spacer(flex: 3),
               Expanded(
