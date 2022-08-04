@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/parameters.dart';
 
-class PressurePercentage extends StatelessWidget {
-  PressurePercentage({Key? key, this.pressure = 0.0}) : super(key: key);
+class PressureFrame extends StatelessWidget {
+  PressureFrame({Key? key, this.pressure = 0.0, this.status = Status.beforeSleep}) : super(key: key);
   double pressure;
+  Status status;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,10 +14,10 @@ class PressurePercentage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Spacer(flex:3),
-          Text("Pressure",
+          Text(status.toString(),
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 32.0,
+              fontSize: 12.0,
               fontWeight: FontWeight.normal,
               height: 1.2,
 
