@@ -20,26 +20,26 @@ class DialogBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int id = 0;
-    if (pressure / 1.0 <= 0.0) {
+    if (pressure / 1.0 <= 0.0 && state == Status.beforeSleep) {
       id = 0;
-    } else if (pressure / 1.0 < 0.4) {
+    } else if (pressure / 1.0 < 0.4 && state == Status.beforeSleep) {
       id = 1;
     } else if (pressure / 1.0 >= 0.4 &&
         pressure / 1.0 <= 0.8 &&
         state == Status.beforeSleep) {
       id = 3;
+    } else if (pressure / 1.0 > 0.8 && state == Status.beforeSleep) {
+      id = 2;
     } else if (pressure / 1.0 >= 0.4 &&
         pressure / 1.0 <= 0.8 &&
         state == Status.sleeping) {
       id = 4;
-    } else if (pressure / 1.0 > 0.8) {
-      id = 2;
     } else if (state == Status.awake) {
       id = 5;
     }
     return Stack(alignment: Alignment.center, children: <Widget>[
-      Image.asset('assets/images/block.png'),
-      Text(dialog[id])
+      //Image.asset('assets/images/block.png'),
+      Text(dialog[id], style: const TextStyle(color: Color(0xff2f2f2f)))
     ]);
   }
 }
