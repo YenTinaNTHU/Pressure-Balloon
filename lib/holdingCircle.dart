@@ -5,8 +5,12 @@ import 'package:my_app/parameters.dart';
 
 class HoldingCircle extends StatefulWidget {
   final int milliSeconds;
+  final Status status;
 
-  const HoldingCircle({Key? key, this.milliSeconds = maxMilliSeconds})
+  const HoldingCircle(
+      {Key? key,
+      this.milliSeconds = maxMilliSeconds,
+      this.status = Status.beforeSleep})
       : super(key: key);
 
   @override
@@ -32,16 +36,16 @@ class _HoldingCircleState extends State<HoldingCircle> {
             strokeWidth: 5,
           ),
           Center(
-            child: buildTime(),
+            child: buildTime(widget.status),
           ),
         ]),
       );
 
-  Widget buildTime() {
+  Widget buildTime(Status status) {
     if (widget.milliSeconds == 0) {
       return Icon(
         Icons.done,
-        color: Colors.black,
+        color: Color(0xffffbdbd),
         size: 12,
       );
     } else {
@@ -49,7 +53,9 @@ class _HoldingCircleState extends State<HoldingCircle> {
         '${(widget.milliSeconds / 1000).ceil()}',
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: (status == Status.sleeping)
+              ? Color(0xff2f2f2f)
+              : Colors.transparent,
           fontSize: 12,
         ),
       );
