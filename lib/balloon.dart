@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_app/parameters.dart';
 import 'package:rive/rive.dart';
+import 'package:vibration/vibration.dart';
 
 class Balloon extends StatefulWidget {
   const Balloon({
@@ -39,23 +43,30 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
         widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
       }else{
         _stopTimer(reset: true);
-        if(widget.status == Status.beforeSleep || widget.status == Status.awake) widget.updateStatus(widget.status);
+        if(widget.status == Status.beforeSleep) widget.updateStatus(Status.sleeping);
+        if(widget.status == Status.awake) widget.updateStatus(Status.beforeSleep);
       }
     } );
   });
 
   ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
 
+  late Timer _timer;
+
   @override
   void initState() {
     super.initState();
     _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if(widget.status == Status.awake) HapticFeedback.vibrate();
+    });
   }
   @override
   void dispose() {
     _forcePressRecognizer.dispose();
     _ticker.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -73,7 +84,6 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
         _pressureStatus = Pressure.big;
       }
     });
-
     // update status (and timer, since we control status with timer)
     // before sleep & awake -> update status at timer == 0
     // sleeping -> update status at _pressure < awakePressureThreshold
@@ -82,14 +92,13 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
         _stopTimer(reset: true);
       }
       if(_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium){
-        _stopTimer(reset: true);
         _startTimer(reset: true);
       }
       if(_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium){
         _stopTimer(reset: true);
       }
     } else { // widget.status == Status.sleeping
-      if(_pressure < awakePressureThreshold) widget.updateStatus(widget.status);
+      if(_pressure < awakePressureThreshold) widget.updateStatus(Status.awake);
     }
 
     // update image

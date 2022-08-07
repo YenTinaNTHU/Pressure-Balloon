@@ -14,17 +14,17 @@ class PressureFrame extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Spacer(flex:3),
-          Text(status.toString(),
+          const Text("Pressure",
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 12.0,
+              fontSize: 20.0,
               fontWeight: FontWeight.normal,
               height: 1.2,
 
           ),),
           Spacer(flex:2),
           Text("${(pressure / 1.0 * 100).toStringAsFixed(0)}%",
-              style: TextStyle(
+              style: const TextStyle(
                   color: Color(0xffd77b7b),
                   fontSize: 50.0,
                   fontWeight: FontWeight.normal,
