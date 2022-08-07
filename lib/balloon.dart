@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/parameters.dart';
+import 'package:rive/rive.dart';
 
 class Balloon extends StatefulWidget {
   const Balloon({
@@ -41,7 +38,7 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
       if (widget.milliseconds > 0) {
         widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
       }else{
-        _stopTimer(reset: false);
+        _stopTimer(reset: true);
         if(widget.status == Status.beforeSleep || widget.status == Status.awake) widget.updateStatus(widget.status);
       }
     } );
@@ -61,6 +58,7 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
     _ticker.dispose();
     super.dispose();
   }
+
   void _handleForcePressOnUpdate(ForcePressDetails fpd){
     Pressure prePressureStatus = _pressureStatus;
     // update pressure and pressure status
@@ -84,6 +82,7 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
         _stopTimer(reset: true);
       }
       if(_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium){
+        _stopTimer(reset: true);
         _startTimer(reset: true);
       }
       if(_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium){
@@ -94,14 +93,23 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
     }
 
     // update image
-    if(_pressureStatus == Pressure.small){
-      setState(() => _imageUrl = 'assets/images/Balloon_S.png');
-    }else if(_pressureStatus == Pressure.medium){
-      setState(() => _imageUrl = 'assets/images/Balloon_M.png');
-    }else{ // _pressureStatus == Pressure.big
-      setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+    if(widget.status == Status.beforeSleep){
+      if(_pressureStatus == Pressure.small){
+        setState(() => _imageUrl = 'assets/images/Balloon_S.png');
+      }else if(_pressureStatus == Pressure.medium){
+        setState(() => _imageUrl = 'assets/images/Balloon_M.png');
+      }else{ // _pressureStatus == Pressure.big
+        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+      }
+    }else if(widget.status == Status.sleeping){
+      setState(() => _imageUrl = 'assets/images/Balloon_sleep.png');
+    }else{ // widget.status == Status.awake
+      if(_pressureStatus == Pressure.big) {
+        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+      } else {
+        setState(() => _imageUrl = 'assets/images/Balloon_EUREKA.png');
+      }
     }
-
   }
 
   // Timer(Ticker) Control
@@ -125,35 +133,75 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    'assets/images/Rope.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    _imageUrl,
-                    fit: BoxFit.fitHeight,
-                    width: (250 * _pressure) + 50,
-                    height: (250 * _pressure) + 50,
-                  ),
-                ),
-                Center(
-                  child: Text.rich(
-                    TextSpan(
-                      text: "press",
-                      style: const TextStyle(
-                        color: Colors.transparent,
-                      ),
-                      recognizer: _forcePressRecognizer,
-                    ),
-                  ),
-                ),
-                ]
+                buildEurekaEffect(),
+                buildBalloon(),
+                buildForcePressRecognizer(),
+              ]
             ),
     );
   }
+  Widget buildEurekaEffect() => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        width: double.infinity * 0.5,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 500),
+          opacity: (widget.status == Status.awake && _pressureStatus == Pressure.small) ? 1.0 : 0.0,
+          child: const RiveAnimation.asset(
+            'assets/animates/Party_Effect.riv',
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
+          ),
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: (250 * _pressure) + 50,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 500),
+          opacity: (widget.status == Status.awake && _pressureStatus != Pressure.big) ? 1.0 : 0.0,
+          child: const RiveAnimation.asset(
+            'assets/animates/Eureka_Effect.riv',
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.bottomCenter,
+          ),
+        ),
+      ),
+    ],
+  );
+  Widget buildBalloon() => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          'assets/images/Rope.png',
+          fit: BoxFit.contain,
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          _imageUrl,
+          fit: BoxFit.fitHeight,
+          width: (250 * _pressure) + 50,
+          height: (250 * _pressure) + 50,
+        ),
+      ),
+    ],
+  );
+  Widget buildForcePressRecognizer() => Center(
+    child: Text.rich(
+      TextSpan(
+        text: "press",
+        style: const TextStyle(
+            color: Colors.transparent,
+            fontSize: 100
+        ),
+        recognizer: _forcePressRecognizer,
+      ),
+    ),
+  );
 }
