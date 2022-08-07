@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/parameters.dart';
 
-class DialogBlock extends StatefulWidget {
-  const DialogBlock({Key? key}) : super(key: key);
+class DialogBlock extends StatelessWidget {
+  DialogBlock({Key? key, this.pressure = 0.1, this.state = Status.beforeSleep})
+      : super(key: key);
 
-  @override
-  State<DialogBlock> createState() => _DialogBlockState();
-}
+  final double pressure;
+  final Status state;
 
-class _DialogBlockState extends State<DialogBlock> {
-
+  final List<String> dialog = [
+    'Press me',
+    'Press me harder',
+    'Too...too hard!!!',
+    'Nice',
+    'Close your eyes and relax.',
+    'EUREKA MOMENT!'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
-    );
+    int id = 0;
+    if (pressure / 1.0 <= 0.0 && state == Status.beforeSleep) {
+      id = 0;
+    } else if (pressure / 1.0 < 0.4 && state == Status.beforeSleep) {
+      id = 1;
+    } else if (pressure / 1.0 >= 0.4 &&
+        pressure / 1.0 <= 0.8 &&
+        state == Status.beforeSleep) {
+      id = 3;
+    } else if (pressure / 1.0 > 0.8 && state == Status.beforeSleep) {
+      id = 2;
+    } else if (pressure / 1.0 >= 0.4 &&
+        pressure / 1.0 <= 0.8 &&
+        state == Status.sleeping) {
+      id = 4;
+    } else if (state == Status.awake) {
+      id = 5;
+    }
+    return Stack(alignment: Alignment.center, children: <Widget>[
+      //Image.asset('assets/images/block.png'),
+      Text(dialog[id], style: const TextStyle(color: Color(0xff2f2f2f)))
+    ]);
   }
 }
