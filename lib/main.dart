@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_app/balloon.dart';
 import 'package:my_app/dialogBlock.dart';
@@ -14,6 +15,7 @@ import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/pressureFrame.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_app/parameters.dart';
+import 'package:vibration/vibration.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,19 +44,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _updateStatus(Status st){
+  void _updateStatus(Status newStatus){
+    HapticFeedback.mediumImpact();
     setState(() {
-      switch(_status){
-        case Status.beforeSleep:
-          _status = Status.sleeping;
-          break;
-        case Status.sleeping:
-          _status = Status.awake;
-          break;
-        case Status.awake:
-          _status = Status.beforeSleep;
-          break;
-      }
+      _status = newStatus;
     });
   }
 
@@ -67,8 +60,9 @@ class _MyAppState extends State<MyApp> {
         textTheme: GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme),
       ),
       home: Scaffold(
-        body: Container(
-          color: Colors.white,
+        body: AnimatedContainer(
+          color: (_status == Status.sleeping) ? Color(0xFF494949) : Colors.white,
+          duration: Duration(milliseconds: 1000),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,7 +138,7 @@ class _MyAppState extends State<MyApp> {
                 flex: 40,
                 child: Balloon(
                   pressure: _pressure,
-                  onChanged: _handlePressureChanged,
+                  updatePressure: _handlePressureChanged,
                   status: _status,
                   updateStatus: _updateStatus,
                   milliseconds: _milliSeconds,

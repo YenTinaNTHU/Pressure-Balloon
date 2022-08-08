@@ -33,6 +33,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
+  rive: ^0.9.1
+  vibration: ^1.7.5
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +64,12 @@ flutter:
     - assets/images/Balloon_S.png
     - assets/images/Balloon_M.png
     - assets/images/Balloon_L.png
+    - assets/images/Balloon_sleep.png
+    - assets/images/Balloon_EUREKA.png
     - assets/images/Rope.png
+    - assets/animates/Eureka_Effect.riv
+    - assets/animates/Party_Effect.riv
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

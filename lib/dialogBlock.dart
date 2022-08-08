@@ -22,24 +22,22 @@ class DialogBlock extends StatelessWidget {
     int id = 0;
     if (pressure / 1.0 <= 0.0 && state == Status.beforeSleep) {
       id = 0;
-    } else if (pressure / 1.0 < 0.4 && state == Status.beforeSleep) {
+    } else if (pressure / 1.0 < smallPressureThreshold && state == Status.beforeSleep) {
       id = 1;
-    } else if (pressure / 1.0 >= 0.4 &&
-        pressure / 1.0 <= 0.8 &&
+    } else if (pressure / 1.0 >= smallPressureThreshold &&
+        pressure / 1.0 <= bigPressureThreshold &&
         state == Status.beforeSleep) {
       id = 3;
-    } else if (pressure / 1.0 > 0.8 && state == Status.beforeSleep) {
+    } else if (pressure / 1.0 > bigPressureThreshold && state == Status.beforeSleep) {
       id = 2;
-    } else if (pressure / 1.0 >= 0.4 &&
-        pressure / 1.0 <= 0.8 &&
-        state == Status.sleeping) {
+    } else if (state == Status.sleeping) {
       id = 4;
     } else if (state == Status.awake) {
       id = 5;
     }
     return Stack(alignment: Alignment.center, children: <Widget>[
       //Image.asset('assets/images/block.png'),
-      Text(dialog[id], style: const TextStyle(color: Color(0xff2f2f2f)))
+      Text(dialog[id], style: TextStyle(color: (state == Status.sleeping) ? Colors.white : Color(0xff2f2f2f)))
     ]);
   }
 }

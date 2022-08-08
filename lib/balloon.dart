@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:my_app/holdingCircle.dart';
+import 'package:flutter/services.dart';
 import 'package:my_app/parameters.dart';
+import 'package:rive/rive.dart';
+import 'package:vibration/vibration.dart';
 
 class Balloon extends StatefulWidget {
   const Balloon({
@@ -12,13 +13,13 @@ class Balloon extends StatefulWidget {
     this.pressure = 0.0,
     this.status = Status.beforeSleep,
     this.milliseconds = maxMilliSeconds,
-    required this.onChanged,
+    required this.updatePressure,
     required this.updateStatus,
     required this.setRemainMilliseconds,
   }) : super(key: key);
 
   final double pressure;
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double> updatePressure;
   final Status status;
   final ValueChanged<Status> updateStatus;
   final int milliseconds;
@@ -31,91 +32,107 @@ class Balloon extends StatefulWidget {
 class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
 
   double _pressure = 0.0;
-  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
   String _imageUrl = 'assets/images/Balloon_S.png';
-
-  // Timer? _timer; //timer may be null
-
   Pressure _pressureStatus = Pressure.small;
 
   Duration _elapsed = Duration.zero;
-  late final ticker = createTicker((elapsed) {
+  late final _ticker = createTicker((elapsed) {
     setState(() {
       _elapsed = elapsed;
       if (widget.milliseconds > 0) {
         widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
       }else{
-        stopTimer(reset: false);
-        if(widget.status == Status.beforeSleep || widget.status == Status.awake) widget.updateStatus(widget.status);
+        _stopTimer(reset: true);
+        if(widget.status == Status.beforeSleep) widget.updateStatus(Status.sleeping);
+        if(widget.status == Status.awake) widget.updateStatus(Status.beforeSleep);
       }
     } );
   });
 
+  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+
+  late Timer _timer;
+
   @override
   void initState() {
     super.initState();
-    _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.1, peakPressure: 1.0);
+    _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if(widget.status == Status.awake) HapticFeedback.vibrate();
+    });
   }
   @override
   void dispose() {
-    ticker.dispose();
+    _forcePressRecognizer.dispose();
+    _ticker.dispose();
+    _timer.cancel();
     super.dispose();
   }
+
   void _handleForcePressOnUpdate(ForcePressDetails fpd){
+    Pressure prePressureStatus = _pressureStatus;
+    // update pressure and pressure status
     setState(() {
       _pressure = fpd.pressure;
-      widget.onChanged(fpd.pressure);
-      if(_pressure < 0.3){
-        _imageUrl = 'assets/images/Balloon_S.png';
-        if(_pressureStatus!= Pressure.small){
-          if(widget.status == Status.sleeping) {
-            widget.updateStatus(widget.status);
-            stopTimer(reset: true);
-          }else{
-            stopTimer(reset: true);
-          }
-        }
+      widget.updatePressure(fpd.pressure);
+      if(_pressure < smallPressureThreshold){
         _pressureStatus = Pressure.small;
-      }else if(_pressure < 0.8){
-        _imageUrl = 'assets/images/Balloon_M.png';
-        if(_pressureStatus != Pressure.medium){
-          if(widget.status != Status.sleeping){
-            stopTimer(reset: true);
-            startTimer(reset: true);
-          }
-        }
+      }else if(_pressure < bigPressureThreshold){
         _pressureStatus = Pressure.medium;
-
       }else{
-        _imageUrl = 'assets/images/Balloon_L.png';
-        if(_pressureStatus!=Pressure.big){
-          if(widget.status != Status.sleeping) stopTimer(reset: true);
-        }
         _pressureStatus = Pressure.big;
       }
     });
+    // update status (and timer, since we control status with timer)
+    // before sleep & awake -> update status at timer == 0
+    // sleeping -> update status at _pressure < awakePressureThreshold
+    if(widget.status == Status.beforeSleep || widget.status == Status.awake){
+      if(_pressureStatus == Pressure.small && prePressureStatus == Pressure.medium){
+        _stopTimer(reset: true);
+      }
+      if(_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium){
+        _startTimer(reset: true);
+      }
+      if(_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium){
+        _stopTimer(reset: true);
+      }
+    } else { // widget.status == Status.sleeping
+      if(_pressure < awakePressureThreshold) widget.updateStatus(Status.awake);
+    }
+
+    // update image
+    if(widget.status == Status.beforeSleep){
+      if(_pressureStatus == Pressure.small){
+        setState(() => _imageUrl = 'assets/images/Balloon_S.png');
+      }else if(_pressureStatus == Pressure.medium){
+        setState(() => _imageUrl = 'assets/images/Balloon_M.png');
+      }else{ // _pressureStatus == Pressure.big
+        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+      }
+    }else if(widget.status == Status.sleeping){
+      setState(() => _imageUrl = 'assets/images/Balloon_sleep.png');
+    }else{ // widget.status == Status.awake
+      if(_pressureStatus == Pressure.big) {
+        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+      } else {
+        setState(() => _imageUrl = 'assets/images/Balloon_EUREKA.png');
+      }
+    }
   }
 
-  void resetTimer() {
+  // Timer(Ticker) Control
+  void _resetTimer() {
     widget.setRemainMilliseconds(maxMilliSeconds);
-    setState(() {
-      _elapsed = Duration.zero;
-    });
+    setState(() => _elapsed = Duration.zero);
   }
-
-  void startTimer({bool reset = true}){
-    if (reset) {
-      resetTimer();
-    }
-    ticker.start();
+  void _startTimer({bool reset = true}){
+    if (reset) _resetTimer();
+    _ticker.start();
   }
-
-  void stopTimer({bool reset = true}){
-    if (reset) {
-      resetTimer();
-    }
-    ticker.stop(canceled: true);
+  void _stopTimer({bool reset = true}){
+    if (reset) _resetTimer();
+    _ticker.stop(canceled: true);
   }
 
   @override
@@ -125,35 +142,75 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin{
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    'assets/images/Rope.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    _imageUrl,
-                    fit: BoxFit.fitHeight,
-                    width: (250 * _pressure) + 50,
-                    height: (250 * _pressure) + 50,
-                  ),
-                ),
-                Center(
-                  child: Text.rich(
-                    TextSpan(
-                      text: "press",
-                      style: const TextStyle(
-                        color: Colors.transparent,
-                      ),
-                      recognizer: _forcePressRecognizer,
-                    ),
-                  ),
-                ),
-                ]
+                buildEurekaEffect(),
+                buildBalloon(),
+                buildForcePressRecognizer(),
+              ]
             ),
     );
   }
+  Widget buildEurekaEffect() => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        width: double.infinity * 0.5,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 500),
+          opacity: (widget.status == Status.awake && _pressureStatus == Pressure.small) ? 1.0 : 0.0,
+          child: const RiveAnimation.asset(
+            'assets/animates/Party_Effect.riv',
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
+          ),
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: (250 * _pressure) + 50,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 500),
+          opacity: (widget.status == Status.awake && _pressureStatus != Pressure.big) ? 1.0 : 0.0,
+          child: const RiveAnimation.asset(
+            'assets/animates/Eureka_Effect.riv',
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.bottomCenter,
+          ),
+        ),
+      ),
+    ],
+  );
+  Widget buildBalloon() => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          'assets/images/Rope.png',
+          fit: BoxFit.contain,
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          _imageUrl,
+          fit: BoxFit.fitHeight,
+          width: (250 * _pressure) + 50,
+          height: (250 * _pressure) + 50,
+        ),
+      ),
+    ],
+  );
+  Widget buildForcePressRecognizer() => Center(
+    child: Text.rich(
+      TextSpan(
+        text: "press",
+        style: const TextStyle(
+            color: Colors.transparent,
+            fontSize: 100
+        ),
+        recognizer: _forcePressRecognizer,
+      ),
+    ),
+  );
 }
