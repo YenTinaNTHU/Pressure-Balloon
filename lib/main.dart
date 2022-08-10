@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_app/SettingPage.dart';
+import 'package:my_app/settingPage.dart';
 import 'package:my_app/homePage.dart';
 
 void main() {
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         textTheme: GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme),
       ),
       routes:{
-        "setting_page":(context) => SettingPage(),
+        "setting_page":(context) => const SettingPage(),
       },
       home: const HomePage()
     );

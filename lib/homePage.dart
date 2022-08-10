@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/recordPage.dart';
+import 'package:my_app/settingPage.dart';
 import 'package:my_app/balloon.dart';
 import 'package:my_app/dialogBlock.dart';
 import 'package:my_app/forceBar.dart';
@@ -39,6 +41,15 @@ class _HomePageState extends State<HomePage> {
 
   void _handleSettingIconPressed(){
     print("pressed");
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => const SettingPage())
+    );
+  }
+  void _handleEditIconPressed(){
+    print("pressed");
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => const RecordPage())
+    );
   }
 
   @override
@@ -59,14 +70,14 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   Expanded(
                     flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
-                      child: Container(
-                        child: const Icon(
-                          Icons.edit_note_rounded,
-                          size: 30,
-                          color: Colors.grey,
-                        ),
+                    child: Container(
+                      child:  IconButton(
+                        alignment: Alignment.topCenter,
+                        padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+                        color: Colors.grey,
+                        iconSize: 30,
+                        icon: const Icon(Icons.edit_note_rounded,),
+                        onPressed: () { _handleEditIconPressed(); },
                       ),
                     ),
                   ),
