@@ -14,9 +14,10 @@ import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/pressureFrame.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_app/parameters.dart';
+import 'package:my_app/record.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(title: "App", home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -36,15 +37,16 @@ class _MyAppState extends State<MyApp> {
       _pressure = newPressure;
     });
   }
-  void _setRemainMilliSeconds(int newMilliSeconds){
+
+  void _setRemainMilliSeconds(int newMilliSeconds) {
     setState(() {
       _milliSeconds = newMilliSeconds;
     });
   }
 
-  void _updateStatus(Status st){
+  void _updateStatus(Status st) {
     setState(() {
-      switch(_status){
+      switch (_status) {
         case Status.beforeSleep:
           _status = Status.sleeping;
           break;
@@ -82,15 +84,19 @@ class _MyAppState extends State<MyApp> {
                     Expanded(
                       flex: 2,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
-                        child: Container(
-                          child: const Icon(
-                            Icons.edit_note_rounded,
-                            size: 30,
+                          padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+                          child: IconButton(
+                            icon: const Icon(Icons.edit_note_rounded),
+                            iconSize: 30,
                             color: Colors.grey,
-                          ),
-                        ),
-                      ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Record()),
+                              );
+                            },
+                          )),
                     ),
                     const Spacer(flex: 1),
                     Expanded(
