@@ -19,19 +19,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     double p = 0.7;
     return MaterialApp(
-      title: 'Eureka Moment',
-      theme: ThemeData(
-        textTheme: GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme),
-      ),
-      routes:{
-        "setting_page":(context) => const SettingPage(),
-      },
-      home: const HomePage()
-    );
+        title: 'Eureka Moment',
+        theme: ThemeData(
+          textTheme: GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme),
+        ),
+        routes: {
+          "setting_page": (context) => const SettingPage(),
+        },
+        home: const HomePage());
   }
 }

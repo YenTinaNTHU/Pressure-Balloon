@@ -26,30 +26,30 @@ class _HomePageState extends State<HomePage> {
       _pressure = newPressure;
     });
   }
-  void _setRemainMilliSeconds(int newMilliSeconds){
+
+  void _setRemainMilliSeconds(int newMilliSeconds) {
     setState(() {
       _milliSeconds = newMilliSeconds;
     });
   }
 
-  void _updateStatus(Status newStatus){
+  void _updateStatus(Status newStatus) {
     HapticFeedback.mediumImpact();
     setState(() {
       _status = newStatus;
     });
   }
 
-  void _handleSettingIconPressed(){
+  void _handleSettingIconPressed() {
     print("pressed");
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const SettingPage())
-    );
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const SettingPage()));
   }
-  void _handleEditIconPressed(){
+
+  void _handleEditIconPressed() {
     print("pressed");
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const RecordPage())
-    );
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const RecordPage()));
   }
 
   @override
@@ -71,13 +71,17 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      child:  IconButton(
+                      child: IconButton(
                         alignment: Alignment.topCenter,
                         padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
                         color: Colors.grey,
                         iconSize: 30,
-                        icon: const Icon(Icons.edit_note_rounded,),
-                        onPressed: () { _handleEditIconPressed(); },
+                        icon: const Icon(
+                          Icons.edit_note_rounded,
+                        ),
+                        onPressed: () {
+                          _handleEditIconPressed();
+                        },
                       ),
                     ),
                   ),
@@ -96,13 +100,17 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      child:  IconButton(
+                      child: IconButton(
                         alignment: Alignment.topCenter,
                         padding: const EdgeInsets.fromLTRB(0, 50, 20, 0),
                         color: Colors.grey,
                         iconSize: 30,
-                        icon: const Icon(Icons.settings_rounded,),
-                        onPressed: () { _handleSettingIconPressed(); },
+                        icon: const Icon(
+                          Icons.settings_rounded,
+                        ),
+                        onPressed: () {
+                          _handleSettingIconPressed();
+                        },
                       ),
                     ),
                   ),
