@@ -20,7 +20,7 @@ class PressureFrame extends StatelessWidget {
           "Pressure",
           style: TextStyle(
             color: Colors.grey,
-            fontSize: 32.0,
+            fontSize: 20,
             fontWeight: FontWeight.normal,
             height: 1.2,
           ),

@@ -78,7 +78,7 @@ class RecordPage extends StatelessWidget {
           "Topic",
           style: TextStyle(
             color: Colors.grey,
-            fontSize: 32.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.normal,
             height: 1.2,
           ),
