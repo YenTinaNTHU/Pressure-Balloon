@@ -8,6 +8,7 @@ import 'package:my_app/forceBar.dart';
 import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/pressureFrame.dart';
 import 'package:my_app/parameters.dart';
+import 'package:my_app/ripples.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -138,16 +139,33 @@ class _HomePageState extends State<HomePage> {
             ),
             Spacer(flex: 3),
             Expanded(
-              flex: 40,
-              child: Balloon(
-                pressure: _pressure,
-                updatePressure: _handlePressureChanged,
-                status: _status,
-                updateStatus: _updateStatus,
-                milliseconds: _milliSeconds,
-                setRemainMilliseconds: _setRemainMilliSeconds,
-              ),
-            ),
+                flex: 40,
+                child: Ripples(
+                  minRadius: 50,
+                  radius: 300,
+                  child: Balloon(
+                    pressure: _pressure,
+                    updatePressure: _handlePressureChanged,
+                    status: _status,
+                    updateStatus: _updateStatus,
+                    milliseconds: _milliSeconds,
+                    setRemainMilliseconds: _setRemainMilliSeconds,
+                  ),
+                )
+                /*
+                child: Ripples(
+                  minRadius: 50,
+                  radius: 300,
+                  child: Balloon(
+                    pressure: _pressure,
+                    updatePressure: _handlePressureChanged,
+                    status: _status,
+                    updateStatus: _updateStatus,
+                    milliseconds: _milliSeconds,
+                    setRemainMilliseconds: _setRemainMilliSeconds,
+                  ),
+                )*/
+                ),
           ],
         ),
       ),
