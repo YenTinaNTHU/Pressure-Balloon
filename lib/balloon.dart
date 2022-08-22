@@ -31,7 +31,7 @@ class Balloon extends StatefulWidget {
 
 class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
   double _pressure = 0.0;
-  String _imageUrl = 'assets/images/Balloon_S.png';
+  String _imageUrl = 'assets/images/smallBalloon.png';
   Pressure _pressureStatus = Pressure.small;
 
   Duration _elapsed = Duration.zero;
@@ -112,7 +112,7 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     // update image
     if (widget.status == Status.beforeSleep) {
       if (_pressureStatus == Pressure.small) {
-        setState(() => _imageUrl = 'assets/images/Balloon_S.png');
+        setState(() => _imageUrl = 'assets/images/smallBalloon.png');
       } else if (_pressureStatus == Pressure.medium) {
         setState(() => _imageUrl = 'assets/images/Balloon_M.png');
       } else {
