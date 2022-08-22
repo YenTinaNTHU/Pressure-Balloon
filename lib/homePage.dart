@@ -140,18 +140,30 @@ class _HomePageState extends State<HomePage> {
             Spacer(flex: 3),
             Expanded(
                 flex: 40,
-                child: Ripples(
-                  minRadius: 50,
-                  radius: 300,
-                  child: Balloon(
-                    pressure: _pressure,
-                    updatePressure: _handlePressureChanged,
-                    status: _status,
-                    updateStatus: _updateStatus,
-                    milliseconds: _milliSeconds,
-                    setRemainMilliseconds: _setRemainMilliSeconds,
+                child:Center(
+                  child: Stack(
+                    children: [
+                      _pressure < 0.3 ? Center(
+                        child: Ripples(
+                        minRadius: 50,
+                        radius: 300,
+                        spreadColor: const Color(0xffF49E9E),
+                        pressure: _pressure,
+                        ),
+                      ) : Container(),
+                      Balloon(
+                        pressure: _pressure,
+                        updatePressure: _handlePressureChanged,
+                        status: _status,
+                        updateStatus: _updateStatus,
+                        milliseconds: _milliSeconds,
+                        setRemainMilliseconds: _setRemainMilliSeconds,
+                      ),
+                    ],
                   ),
                 )
+
+                ),
                 /*
                 child: Ripples(
                   minRadius: 50,
@@ -165,7 +177,6 @@ class _HomePageState extends State<HomePage> {
                     setRemainMilliseconds: _setRemainMilliSeconds,
                   ),
                 )*/
-                ),
           ],
         ),
       ),

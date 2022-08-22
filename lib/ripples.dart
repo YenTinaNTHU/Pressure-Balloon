@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_app/parameters.dart';
 
 class Ripples extends StatefulWidget {
   Ripples({
     this.child,
     required this.radius,
     required this.minRadius,
-    this.press = false,
+    this.pressure = 0.0,
     this.spreadColor = Colors.grey,
     this.duration = const Duration(milliseconds: 4000),
   });
@@ -14,7 +15,7 @@ class Ripples extends StatefulWidget {
   final Widget? child;
   final double radius;
   final double minRadius;
-  final bool press;
+  final double pressure;
   final Color spreadColor;
   final Duration duration;
 
@@ -44,7 +45,7 @@ class _RipplesState extends State<Ripples> with TickerProviderStateMixin {
   }
 
   start() async {
-    while (!widget.press) {
+    while (true) {
       if (mounted) {
         setState(() {
           AnimationController _animationController;
