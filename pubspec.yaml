@@ -75,6 +75,8 @@ flutter:
     - assets/images/normalBalloon.png
     - assets/images/sleepingBalloon.png
     - assets/images/awakeBalloon.png
+    - assets/images/Ellipse_01.png
+    - assets/images/Ellipse_02.png
     - assets/animates/Eureka_Effect.riv
     - assets/animates/Party_Effect.riv
 

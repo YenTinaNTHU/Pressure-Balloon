@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              flex: 25,
+              flex: 15,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,18 +86,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const Spacer(flex: 1),
-                  Expanded(
-                    flex: 10,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                      child: PressureFrame(
-                        pressure: _pressure,
-                        status: _status,
-                      ),
-                    ),
-                  ),
-                  Spacer(flex: 1),
+                  Spacer(flex: 4),
                   Expanded(
                     flex: 2,
                     child: Container(
@@ -118,39 +107,40 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Spacer(flex: 2),
-            Expanded(
-              flex: 7,
-              child: ForceBar(
-                pressure: _pressure,
-              ),
-            ),
-            Spacer(flex: 3),
-            Expanded(
-              flex: 13,
-              child: DialogBlock(pressure: _pressure, state: _status),
-            ),
             Spacer(flex: 3),
             Expanded(
               flex: 5,
-              child: HoldingCircle(
-                milliSeconds: _milliSeconds,
-              ),
+              child: DialogBlock(pressure: _pressure, state: _status),
+            ),
+            Expanded(
+              flex: 2,
+              child: true
+                  ? HoldingCircle(
+                      milliSeconds: _milliSeconds,
+                    )
+                  : Container(),
             ),
             Spacer(flex: 3),
             Expanded(
                 flex: 40,
-                child:Center(
+                child: Center(
                   child: Stack(
                     children: [
-                      _pressure < 0.3 ? Center(
-                        child: Ripples(
-                        minRadius: 50,
-                        radius: 300,
-                        spreadColor: const Color(0xffF49E9E),
-                        pressure: _pressure,
-                        ),
-                      ) : Container(),
+                      (_status != Status.awake)
+                          ? Center(
+                              child:
+                                  Image.asset("assets/images/Ellipse_01.png"))
+                          : Container(),
+                      _pressure < 0.3
+                          ? Center(
+                              child: Ripples(
+                                minRadius: 50,
+                                radius: 300,
+                                spreadColor: const Color(0xffF49E9E),
+                                pressure: _pressure,
+                              ),
+                            )
+                          : Container(),
                       Balloon(
                         pressure: _pressure,
                         updatePressure: _handlePressureChanged,
@@ -161,22 +151,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                )
-
-                ),
-                /*
-                child: Ripples(
-                  minRadius: 50,
-                  radius: 300,
-                  child: Balloon(
-                    pressure: _pressure,
-                    updatePressure: _handlePressureChanged,
-                    status: _status,
-                    updateStatus: _updateStatus,
-                    milliseconds: _milliSeconds,
-                    setRemainMilliseconds: _setRemainMilliSeconds,
-                  ),
-                )*/
+                )),
           ],
         ),
       ),
