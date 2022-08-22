@@ -217,8 +217,22 @@ class _TutorialBalloonState extends State<TutorialBalloon> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Balloon: $_pressure"));
+    return Container(
+      child: Stack(alignment: Alignment.center, children: <Widget>[
+        buildForcePressRecognizer(),
+      ]),
+    );
   }
+
+  Widget buildForcePressRecognizer() => Center(
+    child: Text.rich(
+      TextSpan(
+        text: _pressure.toStringAsFixed(2),
+        style: const TextStyle(color: Colors.grey, fontSize: 100),
+        recognizer: _forcePressRecognizer,
+      ),
+    ),
+  );
 }
 
 
