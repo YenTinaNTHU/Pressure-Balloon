@@ -112,15 +112,15 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     // update image
     if (widget.status == Status.beforeSleep) {
       if (_pressureStatus == Pressure.small) {
-        setState(() => _imageUrl = 'assets/images/smallBallon.png');
+        setState(() => _imageUrl = 'assets/images/smallBalloon.png');
       } else if (_pressureStatus == Pressure.medium) {
-        setState(() => _imageUrl = 'assets/images/normalBallon.png');
+        setState(() => _imageUrl = 'assets/images/normalBalloon.png');
       } else {
         // _pressureStatus == Pressure.big
         setState(() => _imageUrl = 'assets/images/bigBalloon.png');
       }
     } else if (widget.status == Status.sleeping) {
-      setState(() => _imageUrl = 'assets/images/sleepingBallon.png');
+      setState(() => _imageUrl = 'assets/images/sleepingBalloon.png');
     } else {
       // widget.status == Status.awake
       if (_pressureStatus == Pressure.big) {
