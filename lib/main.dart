@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_app/settingPage.dart';
 import 'package:my_app/homePage.dart';
+import 'package:my_app/tutorialPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,6 @@ class _MyAppState extends State<MyApp> {
         routes: {
           "setting_page": (context) => const SettingPage(),
         },
-        home: const HomePage());
+        home: const TutorialPage());
   }
 }
