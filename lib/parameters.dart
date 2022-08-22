@@ -10,7 +10,16 @@ enum Pressure {
   big,
 }
 
+enum TutorialStatus {
+  intro,
+  init,
+  setSmallPressureThreshold,
+  setBigPressureThreshold,
+  finishSetting
+}
+
 const maxMilliSeconds = 3000;
+const tutorialMaxMilliseconds = 3000;
 
 const smallPressureThreshold = 0.5;
 const bigPressureThreshold = 0.8;
