@@ -47,7 +47,7 @@ class DialogBlock extends StatelessWidget {
       Text(dialog[id],
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: (id == 5) ? 40 : 16,
+              fontSize: (id == 5) ? 30 : 12,
               color: (state == Status.sleeping)
                   ? Colors.white
                   : Color(0xff2f2f2f)))

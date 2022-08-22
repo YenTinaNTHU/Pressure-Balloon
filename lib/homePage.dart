@@ -112,9 +112,10 @@ class _HomePageState extends State<HomePage> {
               flex: 5,
               child: DialogBlock(pressure: _pressure, state: _status),
             ),
+            Spacer(flex: 1),
             Expanded(
               flex: 2,
-              child: true
+              child: _status != Status.sleeping
                   ? HoldingCircle(
                       milliSeconds: _milliSeconds,
                     )
@@ -126,11 +127,6 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                   child: Stack(
                     children: [
-                      (_status != Status.awake)
-                          ? Center(
-                              child:
-                                  Image.asset("assets/images/Ellipse_01.png"))
-                          : Container(),
                       _pressure < 0.3
                           ? Center(
                               child: Ripples(
@@ -140,7 +136,11 @@ class _HomePageState extends State<HomePage> {
                                 pressure: _pressure,
                               ),
                             )
-                          : Container(),
+                          : (_status != Status.awake)
+                              ? Center(
+                                  child: Image.asset(
+                                      "assets/images/Ellipse_01.png"))
+                              : Container(),
                       Balloon(
                         pressure: _pressure,
                         updatePressure: _handlePressureChanged,

@@ -31,7 +31,7 @@ class Balloon extends StatefulWidget {
 
 class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
   double _pressure = 0.0;
-  String _imageUrl = 'assets/images/smallBalloon.png';
+  String _imageUrl = 'assets/images/initBalloon_0.png';
   Pressure _pressureStatus = Pressure.small;
 
   Duration _elapsed = Duration.zero;
@@ -112,21 +112,21 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     // update image
     if (widget.status == Status.beforeSleep) {
       if (_pressureStatus == Pressure.small) {
-        setState(() => _imageUrl = 'assets/images/smallBalloon.png');
+        setState(() => _imageUrl = 'assets/images/smallBallon.png');
       } else if (_pressureStatus == Pressure.medium) {
-        setState(() => _imageUrl = 'assets/images/Balloon_M.png');
+        setState(() => _imageUrl = 'assets/images/normalBallon.png');
       } else {
         // _pressureStatus == Pressure.big
-        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+        setState(() => _imageUrl = 'assets/images/bigBalloon.png');
       }
     } else if (widget.status == Status.sleeping) {
-      setState(() => _imageUrl = 'assets/images/Balloon_sleep.png');
+      setState(() => _imageUrl = 'assets/images/sleepingBallon.png');
     } else {
       // widget.status == Status.awake
       if (_pressureStatus == Pressure.big) {
-        setState(() => _imageUrl = 'assets/images/Balloon_L.png');
+        setState(() => _imageUrl = 'assets/images/bigBalloon.png');
       } else {
-        setState(() => _imageUrl = 'assets/images/Balloon_EUREKA.png');
+        setState(() => _imageUrl = 'assets/images/awakeBalloon.png');
       }
     }
   }
