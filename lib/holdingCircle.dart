@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:my_app/parameters.dart';
 
@@ -26,18 +25,26 @@ class _HoldingCircleState extends State<HoldingCircle> {
   }
 
   Widget buildTimer() => SizedBox(
-        width: 30,
-        height: 30,
+        width: 250,
         child: Stack(fit: StackFit.expand, children: [
-          CircularProgressIndicator(
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: LinearProgressIndicator(
+              value:
+                  1 - widget.milliSeconds / maxMilliSeconds, // percent filled
+              valueColor: AlwaysStoppedAnimation(Color(0xffffbdbd)),
+              backgroundColor: Color(0xffe9e9e9),
+            ),
+          )
+          /*
+          LinearProgressIndicator(
             value: 1 - widget.milliSeconds / maxMilliSeconds,
             valueColor: AlwaysStoppedAnimation(Color(0xffffbdbd)),
             backgroundColor: Color(0xffe9e9e9),
-            strokeWidth: 5,
           ),
           Center(
             child: buildTime(widget.status),
-          ),
+          ),*/
         ]),
       );
 

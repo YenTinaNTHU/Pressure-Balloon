@@ -60,13 +60,23 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/block.png
+    # v1
     - assets/images/Balloon_S.png
     - assets/images/Balloon_M.png
     - assets/images/Balloon_L.png
     - assets/images/Balloon_sleep.png
     - assets/images/Balloon_EUREKA.png
     - assets/images/Rope.png
+    # v2
+    - assets/images/initBalloon_0.png
+    - assets/images/initBalloon_0.png
+    - assets/images/smallBalloon.png
+    - assets/images/bigBalloon.png
+    - assets/images/normalBalloon.png
+    - assets/images/sleepingBalloon.png
+    - assets/images/awakeBalloon.png
+    - assets/images/Ellipse_01.png
+    - assets/images/Ellipse_02.png
     - assets/animates/Eureka_Effect.riv
     - assets/animates/Party_Effect.riv
 
