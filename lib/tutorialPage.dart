@@ -1,3 +1,4 @@
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -127,7 +128,12 @@ class _TutorialPageState extends State<TutorialPage> {
                           pressure: _pressure,
                         ),
                       ) : Container(),
-                      TutorialBalloon(),
+                      TutorialBalloon(
+                        status: _status,
+                        updateStatus: _updateStatus,
+                        milliseconds: _milliSeconds,
+                        setRemainMilliseconds: _setRemainMilliSeconds,
+                      ),
                     ],
                   ),
                 )
@@ -186,16 +192,44 @@ class NextBtn extends StatelessWidget {
 class TutorialBalloon extends StatefulWidget {
   const TutorialBalloon({
     Key? key,
+    this.status = TutorialStatus.init,
+    this.milliseconds = maxMilliSeconds,
+    required this.updateStatus,
+    required this.setRemainMilliseconds,
   }) : super(key: key);
 
-
+  final TutorialStatus status;
+  final ValueChanged<TutorialStatus> updateStatus;
+  final int milliseconds;
+  final ValueChanged<int> setRemainMilliseconds;
   @override
   State<TutorialBalloon> createState() => _TutorialBalloonState();
 }
 
-class _TutorialBalloonState extends State<TutorialBalloon> {
+class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProviderStateMixin {
+  String _imageUrl = 'assets/images/smallBalloon.png';
   double _pressure = 0.0;
   ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+
+  Duration _elapsed = Duration.zero;
+  late final _ticker = createTicker((elapsed) {
+    setState(() {
+      _elapsed = elapsed;
+      if (widget.milliseconds > 0) {
+        widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
+      } else {
+        _stopTimer(reset: true);
+        if (widget.status == TutorialStatus.setSmallPressureThreshold) {
+          widget.updateStatus(TutorialStatus.setBigPressureThreshold);
+          _startTimer(reset: true);
+        }
+        if (widget.status == TutorialStatus.setBigPressureThreshold) {
+          widget.updateStatus(TutorialStatus.finishSetting);
+        }
+      }
+    });
+  });
+
   @override
   void initState(){
     super.initState();
@@ -212,23 +246,73 @@ class _TutorialBalloonState extends State<TutorialBalloon> {
   void _handleForcePressOnUpdate(ForcePressDetails fpd) {
     setState(() {
       _pressure = fpd.pressure;
+      if(widget.status == TutorialStatus.init){
+        if(_pressure > 0.30) widget.updateStatus(TutorialStatus.setSmallPressureThreshold);
+        _startTimer(reset: true);
+      }else if(widget.status == TutorialStatus.setSmallPressureThreshold){
+        // record the smallPressureThreshold
+        // TODO: more accurate method
+        smallPressureThreshold = 0.0;
+      }else if(widget.status == TutorialStatus.setBigPressureThreshold){
+        // record the bigPressureThreshold
+        // TODO: more accurate method
+        bigPressureThreshold = 1.0;
+      }else {
+        // do nothing
+      }
     });
+  }
+  // Timer(Ticker) Control
+  void _resetTimer() {
+    widget.setRemainMilliseconds(maxMilliSeconds);
+    setState(() => _elapsed = Duration.zero);
+  }
+  void _startTimer({bool reset = true}) {
+    if (reset) _resetTimer();
+    _ticker.start();
+  }
+  void _stopTimer({bool reset = true}) {
+    if (reset) _resetTimer();
+    _ticker.stop(canceled: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Stack(alignment: Alignment.center, children: <Widget>[
+        buildBalloon(),
         buildForcePressRecognizer(),
       ]),
     );
   }
 
+  Widget buildBalloon() => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          'assets/images/Rope.png',
+          fit: BoxFit.contain,
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        child: Image.asset(
+          _imageUrl,
+          fit: BoxFit.fitHeight,
+          width: 150,
+          height: 150,
+        ),
+      ),
+    ],
+  );
+
   Widget buildForcePressRecognizer() => Center(
     child: Text.rich(
       TextSpan(
         text: _pressure.toStringAsFixed(2),
-        style: const TextStyle(color: Colors.grey, fontSize: 100),
+        style: const TextStyle(color: Colors.transparent, fontSize: 100),
         recognizer: _forcePressRecognizer,
       ),
     ),

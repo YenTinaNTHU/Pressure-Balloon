@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_app/parameters.dart';
 import 'package:rive/rive.dart';
-import 'package:vibration/vibration.dart';
 
 class Balloon extends StatefulWidget {
   const Balloon({
