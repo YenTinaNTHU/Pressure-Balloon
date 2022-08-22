@@ -9,6 +9,7 @@ import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/pressureFrame.dart';
 import 'package:my_app/parameters.dart';
 import 'package:my_app/ripples.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   double _pressure = 0.0;
   Status _status = Status.beforeSleep;
   int _milliSeconds = maxMilliSeconds;
+  AudioPlayer audioPlayer = AudioPlayer();
+  String url = 'assets/audios/sleepMusic.mp3';
 
   void _handlePressureChanged(double newPressure) {
     setState(() {
@@ -36,6 +39,13 @@ class _HomePageState extends State<HomePage> {
 
   void _updateStatus(Status newStatus) {
     HapticFeedback.mediumImpact();
+    if (newStatus == Status.sleeping) {
+      AssetSource source = AssetSource(url);
+      source.setOnPlayer(audioPlayer);
+      audioPlayer.play(source);
+    } else {
+      audioPlayer.pause;
+    }
     setState(() {
       _status = newStatus;
     });

@@ -35,6 +35,8 @@ dependencies:
   google_fonts: ^3.0.1
   rive: ^0.9.1
   vibration: ^1.7.5
+  audioplayers: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +81,8 @@ flutter:
     - assets/images/Ellipse_02.png
     - assets/animates/Eureka_Effect.riv
     - assets/animates/Party_Effect.riv
+    # audio
+    - assets/audios/sleepMusic.mp3
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
