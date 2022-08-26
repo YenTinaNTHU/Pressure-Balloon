@@ -54,8 +54,6 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     });
   });
 
-
-
   @override
   void initState() {
     super.initState();
@@ -99,12 +97,15 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     if (widget.status == Status.beforeSleep || widget.status == Status.awake) {
       if (_pressureStatus == Pressure.small && prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
+        print("small");
       }
       if (_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium) {
         _startTimer(reset: true);
+        print("medium");
       }
       if (_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
+        print("big");
       }
     } else {
       // widget.status == Status.sleeping
