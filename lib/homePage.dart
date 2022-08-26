@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   void _updateStatus(Status newStatus) {
     HapticFeedback.mediumImpact();
     if (newStatus == Status.sleeping) {
-      audioPlayer.play(source, volume: 50.0);
-    } else if(newStatus == Status.awake){
+      audioPlayer.play(source, volume: 0.5);
+    } else {
       audioPlayer.stop();
     }
     setState(() {
@@ -51,8 +51,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleSettingIconPressed() {
     print("pressed");
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const SettingPage()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingPage()));
   }
 
   void _handleEditIconPressed() {
