@@ -92,7 +92,7 @@ class _EndingPageState extends State<EndingPage> {
           ),
           Spacer(flex: 3),
           Expanded(
-            flex: 10,
+            flex: 15,
             child: Column(
               children: [
                 endingDialog(
@@ -102,12 +102,12 @@ class _EndingPageState extends State<EndingPage> {
               ],
             ),
           ),
-          Expanded(
-            flex: 5,
+      _page == 0
+          ? Expanded(
+            flex:5,
             child: Container(
                 width: 300,
-                child: _page == 0
-                    ? SliderTheme(
+                child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                             trackHeight: 20,
                             activeTickMarkColor: Color(0xffFFBDBD),
@@ -127,10 +127,9 @@ class _EndingPageState extends State<EndingPage> {
                             });
                           },
                         ),
-                      )
-                    : Container()),
-          ),
-          Spacer(flex: 10),
+                      ))
+          ) : Container(),
+          Spacer(flex: 5),
           Expanded(
             flex: 20,
             child: Center(

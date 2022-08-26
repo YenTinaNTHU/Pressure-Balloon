@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/holdingCircle.dart';
 import 'package:my_app/parameters.dart';
 import 'package:my_app/recordPage.dart';
 import 'package:my_app/ripples.dart';
@@ -19,6 +20,7 @@ class _TutorialPageState extends State<TutorialPage> {
   double _pressure = 0.0;
   TutorialStatus _status = TutorialStatus.intro;
   int _milliSeconds = maxMilliSeconds;
+  bool _isSetting = false;
 
   void _handlePressureChanged(double newPressure) {
     setState(() {
@@ -37,6 +39,16 @@ class _TutorialPageState extends State<TutorialPage> {
     setState(() {
       _status = newStatus;
     });
+    if(_status == TutorialStatus.setBigPressureThreshold || _status == TutorialStatus.setSmallPressureThreshold){
+      setState(() {
+        _isSetting = true;
+      });
+    }else{
+      setState(() {
+        _isSetting = false;
+      });
+    }
+
   }
 
   void _handleSettingIconPressed() {
@@ -112,7 +124,9 @@ class _TutorialPageState extends State<TutorialPage> {
                   TutorialDialog(
                     status: _status,
                   ),
-                  NextBtn(
+                  _isSetting
+                  ? TutorialHoldingBar(milliSeconds: _milliSeconds,)
+                  : _status == TutorialStatus.init ? Container() : NextBtn(
                     status: _status,
                     updateStatus: _updateStatus,
                   ),
@@ -125,7 +139,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 child: Center(
                   child: Stack(
                     children: [
-                      _pressure < 0.3
+                      _status == TutorialStatus.init
                           ? Center(
                               child: Ripples(
                                 minRadius: 50,
@@ -222,12 +236,10 @@ class TutorialBalloon extends StatefulWidget {
   State<TutorialBalloon> createState() => _TutorialBalloonState();
 }
 
-class _TutorialBalloonState extends State<TutorialBalloon>
-    with SingleTickerProviderStateMixin {
+class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProviderStateMixin {
   String _imageUrl = 'assets/images/smallBalloon.png';
   double _pressure = 0.0;
-  ForcePressGestureRecognizer _forcePressRecognizer =
-      ForcePressGestureRecognizer();
+  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
 
   Duration _elapsed = Duration.zero;
   late final _ticker = createTicker((elapsed) {
@@ -266,13 +278,14 @@ class _TutorialBalloonState extends State<TutorialBalloon>
     setState(() {
       _pressure = fpd.pressure;
       if (widget.status == TutorialStatus.init) {
-        if (_pressure > 0.30)
+        if (_pressure > 0.30) {
           widget.updateStatus(TutorialStatus.setSmallPressureThreshold);
-        _startTimer(reset: true);
+          if(!_ticker.isActive)_startTimer(reset: true);
+        }
       } else if (widget.status == TutorialStatus.setSmallPressureThreshold) {
         // record the smallPressureThreshold
         // TODO: more accurate method
-        smallPressureThreshold = 0.0;
+        smallPressureThreshold = 0.3;
       } else if (widget.status == TutorialStatus.setBigPressureThreshold) {
         // record the bigPressureThreshold
         // TODO: more accurate method
@@ -340,4 +353,36 @@ class _TutorialBalloonState extends State<TutorialBalloon>
           ),
         ),
       );
+}
+
+
+class TutorialHoldingBar extends StatefulWidget {
+  final int milliSeconds;
+  const TutorialHoldingBar(
+      {Key? key, this.milliSeconds = maxMilliSeconds,}) : super(key: key);
+  @override
+  State<TutorialHoldingBar> createState() => _TutorialHoldingBarState();
+}
+class _TutorialHoldingBarState extends State<TutorialHoldingBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: buildTimer(),
+    );
+  }
+  Widget buildTimer() => SizedBox(
+    height: 20,
+    width: 250,
+    child: Stack(fit: StackFit.expand, children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: LinearProgressIndicator(
+          value:
+          1 - widget.milliSeconds / maxMilliSeconds, // percent filled
+          valueColor: AlwaysStoppedAnimation(Color(0xffffbdbd)),
+          backgroundColor: Color(0xffe9e9e9),
+        ),
+      )
+    ]),
+  );
 }
