@@ -6,6 +6,7 @@ import 'package:my_app/recordPage.dart';
 import 'package:my_app/ripples.dart';
 
 import 'SettingPage.dart';
+import 'homePage.dart';
 
 class TutorialPage extends StatefulWidget {
   const TutorialPage({Key? key}) : super(key: key);
@@ -112,6 +113,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     status: _status,
                   ),
                   NextBtn(
+                    status: _status,
                     updateStatus: _updateStatus,
                   ),
                 ],
@@ -175,15 +177,23 @@ class TutorialDialog extends StatelessWidget {
 }
 
 class NextBtn extends StatelessWidget {
-  const NextBtn({Key? key, required this.updateStatus}) : super(key: key);
+  const NextBtn({Key? key, required this.status, required this.updateStatus}) : super(key: key);
   final ValueChanged<TutorialStatus> updateStatus;
+  final TutorialStatus status;
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
       padding: EdgeInsets.only(right: 40),
       child: TextButton(
-        onPressed: () => {updateStatus(TutorialStatus.init)},
+        onPressed: () => {
+          if(status == TutorialStatus.intro){
+            updateStatus(TutorialStatus.init)
+          }
+          else if(status == TutorialStatus.finishSetting){
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()))
+          }
+        },
         child: const Text(
           ">>NEXT",
           textAlign: TextAlign.right,

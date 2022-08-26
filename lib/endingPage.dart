@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/recordPage.dart';
 import 'package:my_app/parameters.dart';
 import 'SettingPage.dart';
+import 'homePage.dart';
 
 class EndingPage extends StatefulWidget {
   const EndingPage({Key? key}) : super(key: key);
@@ -28,7 +29,10 @@ class _EndingPageState extends State<EndingPage> {
 
   void _updatePage(int page) {
     setState(() {
-      if (page <= 3) _page = page;
+      if (page == 4) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
+      }
+      if (page < 4) _page = page;
     });
   }
 
@@ -94,9 +98,7 @@ class _EndingPageState extends State<EndingPage> {
                 endingDialog(
                   page: _page,
                 ),
-                _page != 3
-                    ? NextBtn(updatePage: _updatePage, page: _page)
-                    : Container(),
+                NextBtn(updatePage: _updatePage, page: _page),
               ],
             ),
           ),
@@ -178,8 +180,8 @@ class NextBtn extends StatelessWidget {
       padding: EdgeInsets.only(right: 40),
       child: TextButton(
         onPressed: () => {updatePage(page + 1)},
-        child: const Text(
-          ">>NEXT",
+        child: Text(
+          (page < 3) ? ">> NEXT" : ">> RETURN",
           textAlign: TextAlign.right,
           style: TextStyle(
               decoration: TextDecoration.underline, color: Color(0xffD77B7B)),

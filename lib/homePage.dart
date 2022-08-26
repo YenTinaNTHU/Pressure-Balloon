@@ -51,8 +51,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleSettingIconPressed() {
     print("pressed");
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const SettingPage()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingPage()));
   }
 
   void _handleEditIconPressed() {

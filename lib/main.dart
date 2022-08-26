@@ -32,6 +32,6 @@ class _MyAppState extends State<MyApp> {
         routes: {
           "setting_page": (context) => const SettingPage(),
         },
-        home: const HomePage());
+        home: const TutorialPage());
   }
 }
