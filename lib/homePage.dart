@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   Status _status = Status.beforeSleep;
   int _milliSeconds = maxMilliSeconds;
   AudioPlayer audioPlayer = AudioPlayer();
-  AssetSource source = AssetSource('assets/audios/sleepMusic.mp3');
+  AssetSource source = AssetSource('audios/sleepMusic.mp3');
 
   void _handlePressureChanged(double newPressure) {
     setState(() {

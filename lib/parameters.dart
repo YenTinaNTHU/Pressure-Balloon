@@ -1,4 +1,10 @@
-enum Status { beforeSleep, sleeping, awake }
+enum Status {
+  tutorial,
+  beforeSleep,
+  sleeping,
+  awake,
+  ending
+}
 
 enum Pressure {
   small,

@@ -33,7 +33,8 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
   double _pressure = 0.0;
   String _imageUrl = 'assets/images/initBalloon_0.png';
   Pressure _pressureStatus = Pressure.small;
-
+  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+  late Timer _timer;
   Duration _elapsed = Duration.zero;
   late final _ticker = createTicker((elapsed) {
     setState(() {
@@ -42,34 +43,30 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
         widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
       } else {
         _stopTimer(reset: true);
-        if (widget.status == Status.beforeSleep)
+        if (widget.status == Status.beforeSleep) {
           widget.updateStatus(Status.sleeping);
-        if (widget.status == Status.awake)
-          widget.updateStatus(Status.beforeSleep);
+        }
+        if (widget.status == Status.awake) {
+          _timer.cancel();
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const EndingPage()));
+        }
       }
     });
   });
 
-  ForcePressGestureRecognizer _forcePressRecognizer =
-      ForcePressGestureRecognizer();
 
-  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
-    int _counter = 5;
+    // int _counter = 5;
     _forcePressRecognizer =
         ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (widget.status == Status.awake) {
         HapticFeedback.vibrate();
-        setState(() => _counter--);
-        if (_counter == 0) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const EndingPage()));
-        }
+        // setState(() => _counter--);
       }
     });
   }
@@ -100,16 +97,13 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     // before sleep & awake -> update status at timer == 0
     // sleeping -> update status at _pressure < awakePressureThreshold
     if (widget.status == Status.beforeSleep || widget.status == Status.awake) {
-      if (_pressureStatus == Pressure.small &&
-          prePressureStatus == Pressure.medium) {
+      if (_pressureStatus == Pressure.small && prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
       }
-      if (_pressureStatus == Pressure.medium &&
-          prePressureStatus != Pressure.medium) {
+      if (_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium) {
         _startTimer(reset: true);
       }
-      if (_pressureStatus == Pressure.big &&
-          prePressureStatus == Pressure.medium) {
+      if (_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
       }
     } else {
