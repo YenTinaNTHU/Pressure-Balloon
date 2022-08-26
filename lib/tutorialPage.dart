@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,25 +108,31 @@ class _TutorialPageState extends State<TutorialPage> {
               flex: 20,
               child: Column(
                 children: [
-                  TutorialDialog(status: _status,),
-                  NextBtn(updateStatus: _updateStatus,),
+                  TutorialDialog(
+                    status: _status,
+                  ),
+                  NextBtn(
+                    updateStatus: _updateStatus,
+                  ),
                 ],
               ),
             ),
             Spacer(flex: 3),
             Expanded(
                 flex: 40,
-                child:Center(
+                child: Center(
                   child: Stack(
                     children: [
-                      _pressure < 0.3 ? Center(
-                        child: Ripples(
-                          minRadius: 50,
-                          radius: 300,
-                          spreadColor: const Color(0xffF49E9E),
-                          pressure: _pressure,
-                        ),
-                      ) : Container(),
+                      _pressure < 0.3
+                          ? Center(
+                              child: Ripples(
+                                minRadius: 50,
+                                radius: 300,
+                                spreadColor: const Color(0xffF49E9E),
+                                pressure: _pressure,
+                              ),
+                            )
+                          : Container(),
                       TutorialBalloon(
                         status: _status,
                         updateStatus: _updateStatus,
@@ -136,8 +141,7 @@ class _TutorialPageState extends State<TutorialPage> {
                       ),
                     ],
                   ),
-                )
-            ),
+                )),
           ],
         ),
       ),
@@ -146,7 +150,8 @@ class _TutorialPageState extends State<TutorialPage> {
 }
 
 class TutorialDialog extends StatelessWidget {
-  TutorialDialog({Key? key, this.status = TutorialStatus.intro}) : super(key: key);
+  TutorialDialog({Key? key, this.status = TutorialStatus.intro})
+      : super(key: key);
   final TutorialStatus status;
   @override
   Widget build(BuildContext context) {
@@ -160,10 +165,10 @@ class TutorialDialog extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(50, 20, 50, 0),
       child: Center(
-          child: Text(
-            dialogs[this.status.index],
-            style: TextStyle(color: Color(0xff2f2f2f)),
-          ),
+        child: Text(
+          dialogs[this.status.index],
+          style: TextStyle(color: Color(0xff2f2f2f)),
+        ),
       ),
     );
   }
@@ -182,7 +187,8 @@ class NextBtn extends StatelessWidget {
         child: const Text(
           ">>NEXT",
           textAlign: TextAlign.right,
-          style: TextStyle(decoration: TextDecoration.underline, color: Color(0xffD77B7B)),
+          style: TextStyle(
+              decoration: TextDecoration.underline, color: Color(0xffD77B7B)),
         ),
       ),
     );
@@ -206,10 +212,12 @@ class TutorialBalloon extends StatefulWidget {
   State<TutorialBalloon> createState() => _TutorialBalloonState();
 }
 
-class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProviderStateMixin {
+class _TutorialBalloonState extends State<TutorialBalloon>
+    with SingleTickerProviderStateMixin {
   String _imageUrl = 'assets/images/smallBalloon.png';
   double _pressure = 0.0;
-  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+  ForcePressGestureRecognizer _forcePressRecognizer =
+      ForcePressGestureRecognizer();
 
   Duration _elapsed = Duration.zero;
   late final _ticker = createTicker((elapsed) {
@@ -231,9 +239,10 @@ class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProv
   });
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _forcePressRecognizer = ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
+    _forcePressRecognizer =
+        ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
   }
 
@@ -246,31 +255,35 @@ class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProv
   void _handleForcePressOnUpdate(ForcePressDetails fpd) {
     setState(() {
       _pressure = fpd.pressure;
-      if(widget.status == TutorialStatus.init){
-        if(_pressure > 0.30) widget.updateStatus(TutorialStatus.setSmallPressureThreshold);
+      if (widget.status == TutorialStatus.init) {
+        if (_pressure > 0.30)
+          widget.updateStatus(TutorialStatus.setSmallPressureThreshold);
         _startTimer(reset: true);
-      }else if(widget.status == TutorialStatus.setSmallPressureThreshold){
+      } else if (widget.status == TutorialStatus.setSmallPressureThreshold) {
         // record the smallPressureThreshold
         // TODO: more accurate method
         smallPressureThreshold = 0.0;
-      }else if(widget.status == TutorialStatus.setBigPressureThreshold){
+      } else if (widget.status == TutorialStatus.setBigPressureThreshold) {
         // record the bigPressureThreshold
         // TODO: more accurate method
         bigPressureThreshold = 1.0;
-      }else {
+      } else {
         // do nothing
       }
     });
   }
+
   // Timer(Ticker) Control
   void _resetTimer() {
     widget.setRemainMilliseconds(maxMilliSeconds);
     setState(() => _elapsed = Duration.zero);
   }
+
   void _startTimer({bool reset = true}) {
     if (reset) _resetTimer();
     _ticker.start();
   }
+
   void _stopTimer({bool reset = true}) {
     if (reset) _resetTimer();
     _ticker.stop(canceled: true);
@@ -287,36 +300,34 @@ class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProv
   }
 
   Widget buildBalloon() => Stack(
-    alignment: Alignment.center,
-    children: [
-      Container(
         alignment: Alignment.center,
-        child: Image.asset(
-          'assets/images/Rope.png',
-          fit: BoxFit.contain,
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        child: Image.asset(
-          _imageUrl,
-          fit: BoxFit.fitHeight,
-          width: 150,
-          height: 150,
-        ),
-      ),
-    ],
-  );
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Image.asset(
+              'assets/images/Rope.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Image.asset(
+              _imageUrl,
+              fit: BoxFit.fitHeight,
+              width: 150,
+              height: 150,
+            ),
+          ),
+        ],
+      );
 
   Widget buildForcePressRecognizer() => Center(
-    child: Text.rich(
-      TextSpan(
-        text: _pressure.toStringAsFixed(2),
-        style: const TextStyle(color: Colors.transparent, fontSize: 100),
-        recognizer: _forcePressRecognizer,
-      ),
-    ),
-  );
+        child: Text.rich(
+          TextSpan(
+            text: _pressure.toStringAsFixed(2),
+            style: const TextStyle(color: Colors.transparent, fontSize: 100),
+            recognizer: _forcePressRecognizer,
+          ),
+        ),
+      );
 }
-
-

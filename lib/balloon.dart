@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/endingPage.dart';
 import 'package:my_app/parameters.dart';
 import 'package:rive/rive.dart';
 
@@ -57,11 +58,19 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    int _counter = 5;
     _forcePressRecognizer =
         ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      if (widget.status == Status.awake) HapticFeedback.vibrate();
+      if (widget.status == Status.awake) {
+        HapticFeedback.vibrate();
+        setState(() => _counter--);
+        if (_counter == 0) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const EndingPage()));
+        }
+      }
     });
   }
 
@@ -156,6 +165,7 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
       ]),
     );
   }
+
   // ========= build widget =========
   Widget buildEurekaEffect() => Stack(
         alignment: Alignment.center,

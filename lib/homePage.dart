@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   Status _status = Status.beforeSleep;
   int _milliSeconds = maxMilliSeconds;
   AudioPlayer audioPlayer = AudioPlayer();
-  AssetSource source = AssetSource('audios/sleepMusic.mp3');
+  AssetSource source = AssetSource('assets/audios/sleepMusic.mp3');
 
   void _handlePressureChanged(double newPressure) {
     setState(() {
@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   void _updateStatus(Status newStatus) {
     HapticFeedback.mediumImpact();
     if (newStatus == Status.sleeping) {
-      audioPlayer.play(source, volume: 50.0);
-    } else if(newStatus == Status.awake){
+      audioPlayer.play(source, volume: 0.5);
+    } else {
       audioPlayer.stop();
     }
     setState(() {

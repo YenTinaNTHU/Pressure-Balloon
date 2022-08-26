@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_app/settingPage.dart';
 import 'package:my_app/homePage.dart';
 import 'package:my_app/tutorialPage.dart';
+import 'package:my_app/endingPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,6 +32,6 @@ class _MyAppState extends State<MyApp> {
         routes: {
           "setting_page": (context) => const SettingPage(),
         },
-        home: const TutorialPage());
+        home: const HomePage());
   }
 }
