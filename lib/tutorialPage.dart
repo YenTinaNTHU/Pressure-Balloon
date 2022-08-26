@@ -125,7 +125,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 child: Center(
                   child: Stack(
                     children: [
-                      _pressure < 0.3
+                      _status == TutorialStatus.init
                           ? Center(
                               child: Ripples(
                                 minRadius: 50,
@@ -222,12 +222,10 @@ class TutorialBalloon extends StatefulWidget {
   State<TutorialBalloon> createState() => _TutorialBalloonState();
 }
 
-class _TutorialBalloonState extends State<TutorialBalloon>
-    with SingleTickerProviderStateMixin {
+class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProviderStateMixin {
   String _imageUrl = 'assets/images/smallBalloon.png';
   double _pressure = 0.0;
-  ForcePressGestureRecognizer _forcePressRecognizer =
-      ForcePressGestureRecognizer();
+  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
 
   Duration _elapsed = Duration.zero;
   late final _ticker = createTicker((elapsed) {
@@ -266,9 +264,10 @@ class _TutorialBalloonState extends State<TutorialBalloon>
     setState(() {
       _pressure = fpd.pressure;
       if (widget.status == TutorialStatus.init) {
-        if (_pressure > 0.30)
+        if (_pressure > 0.30) {
           widget.updateStatus(TutorialStatus.setSmallPressureThreshold);
-        _startTimer(reset: true);
+          _startTimer(reset: true);
+        }
       } else if (widget.status == TutorialStatus.setSmallPressureThreshold) {
         // record the smallPressureThreshold
         // TODO: more accurate method
