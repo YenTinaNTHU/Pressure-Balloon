@@ -18,15 +18,21 @@ class RecordAdapter extends TypeAdapter<Record> {
     };
     return Record(
       tutorialLearned: fields[0] as bool,
-    );
+    )
+      ..smallPressureThreshold = fields[1] as double
+      ..bigPressureThreshold = fields[2] as double;
   }
 
   @override
   void write(BinaryWriter writer, Record obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.tutorialLearned);
+      ..write(obj.tutorialLearned)
+      ..writeByte(1)
+      ..write(obj.smallPressureThreshold)
+      ..writeByte(2)
+      ..write(obj.bigPressureThreshold);
   }
 
   @override

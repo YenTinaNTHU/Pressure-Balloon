@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_app/endingPage.dart';
 import 'package:my_app/parameters.dart';
+import 'package:my_app/record.dart';
 import 'package:rive/rive.dart';
 
 class Balloon extends StatefulWidget {
@@ -33,9 +35,14 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
   double _pressure = 0.0;
   String _imageUrl = 'assets/images/initBalloon_0.png';
   Pressure _pressureStatus = Pressure.small;
-  ForcePressGestureRecognizer _forcePressRecognizer = ForcePressGestureRecognizer();
+  ForcePressGestureRecognizer _forcePressRecognizer =
+      ForcePressGestureRecognizer();
   late Timer _timer;
   Duration _elapsed = Duration.zero;
+  late Box box;
+  late double _smallPressureThreshold;
+  late double _bigPressureThreshold;
+
   late final _ticker = createTicker((elapsed) {
     setState(() {
       _elapsed = elapsed;
@@ -48,14 +55,15 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
         }
         if (widget.status == Status.awake) {
           _timer.cancel();
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const EndingPage()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const EndingPage()));
         }
       }
     });
   });
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     // int _counter = 5;
     _forcePressRecognizer =
@@ -67,6 +75,9 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
         // setState(() => _counter--);
       }
     });
+
+    _smallPressureThreshold = box.get('smallPressureThreshold');
+    _bigPressureThreshold = box.get('bigPressureThreshold');
   }
 
   @override
@@ -83,9 +94,9 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     setState(() {
       _pressure = fpd.pressure;
       widget.updatePressure(fpd.pressure);
-      if (_pressure < smallPressureThreshold) {
+      if (_pressure < _smallPressureThreshold) {
         _pressureStatus = Pressure.small;
-      } else if (_pressure < bigPressureThreshold) {
+      } else if (_pressure < _bigPressureThreshold) {
         _pressureStatus = Pressure.medium;
       } else {
         _pressureStatus = Pressure.big;
@@ -95,15 +106,18 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
     // before sleep & awake -> update status at timer == 0
     // sleeping -> update status at _pressure < awakePressureThreshold
     if (widget.status == Status.beforeSleep || widget.status == Status.awake) {
-      if (_pressureStatus == Pressure.small && prePressureStatus == Pressure.medium) {
+      if (_pressureStatus == Pressure.small &&
+          prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
         print("small");
       }
-      if (_pressureStatus == Pressure.medium && prePressureStatus != Pressure.medium) {
+      if (_pressureStatus == Pressure.medium &&
+          prePressureStatus != Pressure.medium) {
         _startTimer(reset: true);
         print("medium");
       }
-      if (_pressureStatus == Pressure.big && prePressureStatus == Pressure.medium) {
+      if (_pressureStatus == Pressure.big &&
+          prePressureStatus == Pressure.medium) {
         _stopTimer(reset: true);
         print("big");
       }
