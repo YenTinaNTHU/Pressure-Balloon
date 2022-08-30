@@ -39,7 +39,6 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
       ForcePressGestureRecognizer();
   late Timer _timer;
   Duration _elapsed = Duration.zero;
-  late Box box;
   late double _smallPressureThreshold;
   late double _bigPressureThreshold;
 
