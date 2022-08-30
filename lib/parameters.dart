@@ -25,7 +25,7 @@ List<String> moods = [
 ];
 
 const maxMilliSeconds = 3000;
-const tutorialMaxMilliseconds = 3000;
+const tutorialMaxMilliseconds = 5000;
 
 double smallPressureThreshold = 0.5;
 double bigPressureThreshold = 0.8;

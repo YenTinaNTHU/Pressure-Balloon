@@ -21,7 +21,7 @@ class TutorialPage extends StatefulWidget {
 class _TutorialPageState extends State<TutorialPage> {
   double _pressure = 0.0;
   TutorialStatus _status = TutorialStatus.intro;
-  int _milliSeconds = maxMilliSeconds;
+  int _milliSeconds = tutorialMaxMilliseconds;
   bool _isSetting = false;
 
   void _handlePressureChanged(double newPressure) {
@@ -231,7 +231,7 @@ class TutorialBalloon extends StatefulWidget {
   const TutorialBalloon({
     Key? key,
     this.status = TutorialStatus.init,
-    this.milliseconds = maxMilliSeconds,
+    this.milliseconds = tutorialMaxMilliseconds,
     required this.updateStatus,
     required this.setRemainMilliseconds,
   }) : super(key: key);
@@ -244,9 +244,8 @@ class TutorialBalloon extends StatefulWidget {
   State<TutorialBalloon> createState() => _TutorialBalloonState();
 }
 
-class _TutorialBalloonState extends State<TutorialBalloon>
-    with SingleTickerProviderStateMixin {
-  String _imageUrl = 'assets/images/smallBalloon.png';
+class _TutorialBalloonState extends State<TutorialBalloon> with SingleTickerProviderStateMixin {
+  String _imageUrl = 'assets/images/normalBalloon_01.png';
   double _pressure = 0.0;
   ForcePressGestureRecognizer _forcePressRecognizer =
       ForcePressGestureRecognizer();
@@ -256,7 +255,7 @@ class _TutorialBalloonState extends State<TutorialBalloon>
     setState(() {
       _elapsed = elapsed;
       if (widget.milliseconds > 0) {
-        widget.setRemainMilliseconds(maxMilliSeconds - elapsed.inMilliseconds);
+        widget.setRemainMilliseconds(tutorialMaxMilliseconds - elapsed.inMilliseconds);
       } else {
         _stopTimer(reset: true);
         if (widget.status == TutorialStatus.setSmallPressureThreshold) {
@@ -302,6 +301,12 @@ class _TutorialBalloonState extends State<TutorialBalloon>
         // TODO: more accurate method
         bigPressureThreshold = 1.0;
         box.put('bigPressureThreshold', bigPressureThreshold);
+        if(_pressure < smallPressureThreshold){
+          // reset Timer
+          if(_ticker.isActive) _stopTimer(reset: true);
+        }else{
+          if(!_ticker.isActive) _startTimer();
+        }
       } else {
         // do nothing
       }
@@ -310,7 +315,7 @@ class _TutorialBalloonState extends State<TutorialBalloon>
 
   // Timer(Ticker) Control
   void _resetTimer() {
-    widget.setRemainMilliseconds(maxMilliSeconds);
+    widget.setRemainMilliseconds(tutorialMaxMilliseconds);
     setState(() => _elapsed = Duration.zero);
   }
 
@@ -347,7 +352,7 @@ class _TutorialBalloonState extends State<TutorialBalloon>
           Container(
             alignment: Alignment.center,
             child: Image.asset(
-              _imageUrl,
+              getImageUrl(),
               fit: BoxFit.fitHeight,
               width: 150,
               height: 150,
@@ -365,14 +370,29 @@ class _TutorialBalloonState extends State<TutorialBalloon>
           ),
         ),
       );
+
+  String getImageUrl(){
+    _imageUrl = "";
+    switch(widget.status){
+      case TutorialStatus.intro:
+        _imageUrl = 'assets/images/normalBalloon_01.png'; break;
+      case TutorialStatus.init:
+        _imageUrl = 'assets/images/initBalloon_0.png'; break;
+      case TutorialStatus.setSmallPressureThreshold:
+        _imageUrl = 'assets/images/normalBalloon.png'; break;
+      case TutorialStatus.setBigPressureThreshold:
+        _imageUrl = 'assets/images/initBalloon_2.png'; break;
+      case TutorialStatus.finishSetting:
+        _imageUrl = 'assets/images/awakeBalloon_1.png'; break;
+    }
+    return _imageUrl;
+  }
 }
 
 class TutorialHoldingBar extends StatefulWidget {
   final int milliSeconds;
-  const TutorialHoldingBar({
-    Key? key,
-    this.milliSeconds = maxMilliSeconds,
-  }) : super(key: key);
+  const TutorialHoldingBar(
+      {Key? key, this.milliSeconds = tutorialMaxMilliseconds,}) : super(key: key);
   @override
   State<TutorialHoldingBar> createState() => _TutorialHoldingBarState();
 }
@@ -386,18 +406,18 @@ class _TutorialHoldingBarState extends State<TutorialHoldingBar> {
   }
 
   Widget buildTimer() => SizedBox(
-        height: 20,
-        width: 250,
-        child: Stack(fit: StackFit.expand, children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: LinearProgressIndicator(
-              value:
-                  1 - widget.milliSeconds / maxMilliSeconds, // percent filled
-              valueColor: AlwaysStoppedAnimation(Color(0xffffbdbd)),
-              backgroundColor: Color(0xffe9e9e9),
-            ),
-          )
-        ]),
-      );
+    height: 20,
+    width: 250,
+    child: Stack(fit: StackFit.expand, children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: LinearProgressIndicator(
+          value:
+          1 - widget.milliSeconds / tutorialMaxMilliseconds, // percent filled
+          valueColor: AlwaysStoppedAnimation(Color(0xffffbdbd)),
+          backgroundColor: Color(0xffe9e9e9),
+        ),
+      )
+    ]),
+  );
 }
