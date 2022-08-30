@@ -1,10 +1,6 @@
-enum Status {
-  tutorial,
-  beforeSleep,
-  sleeping,
-  awake,
-  ending
-}
+import 'package:hive_flutter/hive_flutter.dart';
+
+enum Status { tutorial, beforeSleep, sleeping, awake, ending }
 
 enum Pressure {
   small,
@@ -34,3 +30,5 @@ const tutorialMaxMilliseconds = 3000;
 double smallPressureThreshold = 0.5;
 double bigPressureThreshold = 0.8;
 const awakePressureThreshold = 0.1;
+
+late Box box;

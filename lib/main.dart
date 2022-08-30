@@ -5,13 +5,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:my_app/parameters.dart';
 import 'package:my_app/record.dart';
 import 'package:my_app/settingPage.dart';
 import 'package:my_app/homePage.dart';
 import 'package:my_app/tutorialPage.dart';
 import 'package:my_app/endingPage.dart';
-
-late Box box;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

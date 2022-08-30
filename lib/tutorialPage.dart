@@ -250,7 +250,6 @@ class _TutorialBalloonState extends State<TutorialBalloon>
   double _pressure = 0.0;
   ForcePressGestureRecognizer _forcePressRecognizer =
       ForcePressGestureRecognizer();
-  late Box box;
 
   Duration _elapsed = Duration.zero;
   late final _ticker = createTicker((elapsed) {
@@ -277,8 +276,6 @@ class _TutorialBalloonState extends State<TutorialBalloon>
     _forcePressRecognizer =
         ForcePressGestureRecognizer(startPressure: 0.0, peakPressure: 1.0);
     _forcePressRecognizer.onUpdate = _handleForcePressOnUpdate;
-    //box = await Hive.openBox("recordbox");
-    //Hive.registerAdapter(RecordAdapter());
   }
 
   @override

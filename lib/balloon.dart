@@ -75,11 +75,9 @@ class _BalloonState extends State<Balloon> with SingleTickerProviderStateMixin {
         // setState(() => _counter--);
       }
     });
-    //box = await Hive.openBox("recordbox");
-    //Hive.registerAdapter(RecordAdapter());
 
-    //_smallPressureThreshold = box.get('smallPressureThreshold');
-    //_bigPressureThreshold = box.get('bigPressureThreshold');
+    _smallPressureThreshold = box.get('smallPressureThreshold');
+    _bigPressureThreshold = box.get('bigPressureThreshold');
   }
 
   @override
