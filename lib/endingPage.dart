@@ -133,12 +133,34 @@ class _EndingPageState extends State<EndingPage> {
           Expanded(
             flex: 20,
             child: Center(
-                child: Image.asset('assets/images/normalBalloon_01.png')),
+                child: Image.asset(getImageUrl())),
           ),
           Spacer(flex: 10),
         ],
       ),
     );
+  }
+
+  String getImageUrl(){
+    String _imgUrl = '';
+    switch(_page){
+      case 0:
+        _imgUrl = 'assets/images/normalBalloon_01.png';
+        break;
+      case 1:
+        _imgUrl = 'assets/images/awakeBalloon_1.png';
+        break;
+      case 2:
+        _imgUrl = 'assets/images/awakeBalloon.png';
+        break;
+      case 3:
+        _imgUrl = 'assets/images/awakeBalloon_2.png';
+        break;
+      default:
+        _imgUrl = 'assets/images/normalBalloon_01.png';
+        break;
+    }
+    return _imgUrl;
   }
 }
 

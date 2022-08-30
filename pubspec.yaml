@@ -73,12 +73,15 @@ flutter:
     # v2
     - assets/images/initBalloon_0.png
     - assets/images/initBalloon_1.png
+    - assets/images/initBalloon_2.png
     - assets/images/smallBalloon.png
     - assets/images/bigBalloon.png
     - assets/images/normalBalloon.png
     - assets/images/normalBalloon_01.png
     - assets/images/sleepingBalloon.png
     - assets/images/awakeBalloon.png
+    - assets/images/awakeBalloon_1.png
+    - assets/images/awakeBalloon_2.png
     - assets/images/Ellipse_01.png
     - assets/images/Ellipse_02.png
     - assets/animates/Eureka_Effect.riv
